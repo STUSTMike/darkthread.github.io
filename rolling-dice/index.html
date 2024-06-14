@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>猜骰子大小</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <h1>猜骰子大小</h1>
+  <div class="table">
+    <dice-cube></dice-cube>
+  </div>
+  <p>
+    <span class="points"></span>
+  </p>
+  <p>
+    下次擲骰子倒數：<span class="countdown">30</span>秒
+  </p>
+  <p>
+    <button onclick="guess('big')" data-guess="big">猜大</button>
+    <button onclick="guess('small')" data-guess="small">猜小</button>
+  </p>  
+  <p class="result"></p>
+  <script src="script.js"></script>
+</body>
+
+</html>
