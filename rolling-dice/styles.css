@@ -132,3 +132,15 @@
     background-image: url(imgs/dice3.svg);
   }
   
+  .result {
+    font-size: 24pt;
+    color: white; /* 初始為白色 */
+  }
+  
+  .result.correct {
+    color: green; /* 猜對變綠色 */
+  }
+  
+  .result.incorrect {
+    color: red; /* 猜錯變紅色 */
+  }
