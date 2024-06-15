@@ -16,13 +16,11 @@
   <p>
     <span class="points"></span>
   </p>
-  <p>
-    下次擲骰子倒數：<span class="countdown">30</span>秒
-  </p>
-  <p>
-    <button onclick="guess('big')" data-guess="big">猜大</button>
-    <button onclick="guess('small')" data-guess="small">猜小</button>
-  </p>  
+  <p class="countdown"></p>
+  <div class="guess-buttons">
+    <button class="guess-button" data-guess="大">大</button>
+    <button class="guess-button" data-guess="小">小</button>
+  </div>
   <p class="result"></p>
   <script src="script.js"></script>
 </body>

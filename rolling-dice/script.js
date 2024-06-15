@@ -65,80 +65,56 @@ var cubes = [...document.querySelectorAll('dice-cube')];
 
 async function rollDice() {
   const res = document.querySelector('.points');
-  res.textContent = '洗巴辣~~~';
+  res.textContent = '轉一轉~~~';
   await Promise.all(cubes.map(c => c.throw()));
   res.textContent = cubes.map(c => c.points).join(' ');
 }
 
-// Countdown timer function
-function startCountdown(duration) {
-  let timer = duration, seconds;
-  const countdownElem = document.querySelector('.countdown');
+function startCountdown() {
+  const countdownElement = document.querySelector('.countdown');
+  let countdown = 30;
 
-  setInterval(() => {
-    seconds = parseInt(timer, 10);
-
-    countdownElem.textContent = seconds;
-
-    if (--timer < 0) {
-      timer = duration;
+  const interval = setInterval(() => {
+    countdownElement.textContent = `倒數計時：${countdown}秒`;
+    if (countdown === 0) {
+      clearInterval(interval);
+      rollDice().then(() => {
+        if (userGuess) {
+          checkResult();
+        } else {
+          document.querySelector('.result').textContent = ''; // 清除結果
+        }
+        setTimeout(startCountdown, 1000); // 等待骰子擲完後再重新開始倒數
+      });
     }
+    countdown--;
   }, 1000);
 }
-async function guess(size) {
-  const resultElem = document.querySelector('.result');
-  const bigButton = document.querySelector('button[data-guess="big"]');
-  const smallButton = document.querySelector('button[data-guess="small"]');
-  const countdownElem = document.querySelector('.countdown');
-  
-  // 顯示玩家猜測
-  resultElem.textContent = `你猜的是${size}`;
 
-  // 禁用按鈕
-  bigButton.disabled = true;
-  smallButton.disabled = true;
+let userGuess = '';
 
-  // 等待倒數計時器結束
-  await new Promise(resolve => {
-    const countdownInterval = setInterval(() => {
-      let countdown = parseInt(countdownElem.textContent);
-      countdown--;
-      countdownElem.textContent = countdown;
-      if (countdown === 0) {
-        clearInterval(countdownInterval);
-        resolve();
-      }
-    }, 1000);
-  });
-
-  // 等待擲骰子完成
-  await rollDice();
-
-  // 獲取骰子點數
-  const points = cubes.reduce((acc, c) => acc + c.points, 0);
-
-  // 判斷猜測結果
-  let result;
-  if ((size === 'big' && points > 10) || (size === 'small' && points <= 10)) {
-    result = '你猜對了！';
-  } else {
-    result = '你猜錯了！';
-  }
-
-  // 顯示結果
-  resultElem.textContent = `${result} 點數為${points}`;
-
-  // 啟用按鈕
-  bigButton.disabled = false;
-  smallButton.disabled = false;
+function handleGuess(event) {
+  userGuess = event.target.getAttribute('data-guess');
+  document.querySelector('.result').textContent = `你猜的是：${userGuess}`;
+  document.querySelectorAll('.guess-button').forEach(button => button.disabled = true);
 }
 
+function checkResult() {
+  const totalPoints = cubes.map(c => c.points).reduce((a, b) => a + b, 0);
+  const resultText = document.querySelector('.result');
+  if ((totalPoints > 3 && userGuess === '大') || (totalPoints <= 3 && userGuess === '小')) {
+    resultText.textContent = `你猜的是：${userGuess} - 你猜對了!`;
+  } else {
+    resultText.textContent = `你猜的是：${userGuess} - 你猜錯了!`;
+  }
+  document.querySelectorAll('.guess-button').forEach(button => button.disabled = false);
+  userGuess = ''; // 重置猜測
+}
 
-// Initial roll
-rollDice();
-startCountdown(30);
+// 綁定猜測按鈕事件
+document.querySelectorAll('.guess-button').forEach(button => {
+  button.addEventListener('click', handleGuess);
+});
 
-// Roll dice every 30 seconds
-setInterval(rollDice, 30000);
-
-
+// 開始倒數
+startCountdown();
